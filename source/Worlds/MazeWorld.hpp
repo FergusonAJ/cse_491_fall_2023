@@ -14,17 +14,19 @@ namespace cse491 {
 
   class MazeWorld : public WorldBase {
   protected:
-    enum ActionType { REMAIN_STILL=0, MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT };
+    enum ActionType { REMAIN_STILL=0, MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, QUIT };
 
     size_t floor_id; ///< Easy access to floor CellType ID.
     size_t wall_id;  ///< Easy access to wall CellType ID.
 
     /// Provide the agent with movement actions.
     void ConfigAgent(AgentBase & agent) override {
+      agent.AddAction("do_nothing", REMAIN_STILL);
       agent.AddAction("up", MOVE_UP);
       agent.AddAction("down", MOVE_DOWN);
       agent.AddAction("left", MOVE_LEFT);
       agent.AddAction("right", MOVE_RIGHT);
+      agent.AddAction("quit", QUIT);
     }
 
   public:
@@ -40,11 +42,12 @@ namespace cse491 {
       // Determine where the agent is trying to move.
       GridPosition new_position;
       switch (action_id) {
-      case REMAIN_STILL: new_position = agent.GetPosition(); break;
+      case REMAIN_STILL: return agent.GetActionResult();
       case MOVE_UP:      new_position = agent.GetPosition().Above(); break;
       case MOVE_DOWN:    new_position = agent.GetPosition().Below(); break;
       case MOVE_LEFT:    new_position = agent.GetPosition().ToLeft(); break;
       case MOVE_RIGHT:   new_position = agent.GetPosition().ToRight(); break;
+      case QUIT: run_over = true; return true;
       }
 
       // Don't let the agent move off the world or into a wall.

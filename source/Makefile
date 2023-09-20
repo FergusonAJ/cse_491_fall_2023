@@ -1,6 +1,6 @@
 FLAGS_version = -std=c++20
-FLAGS_warn    = -Wall -Wextra -Wcast-align -Winfinite-recursion -Wnon-virtual-dtor -Wnull-dereference -Woverloaded-virtual -pedantic
-FLAGS_all     = $(FLAGS_version) $(FLAGS_warn)
+FLAGS_warn    = -Wall -Wextra -Wcast-align -Wnon-virtual-dtor -Wnull-dereference -Woverloaded-virtual -pedantic
+FLAGS_all     = $(FLAGS_version) $(FLAGS_warn) -I../third_party/ -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
 FLAGS_debug   = $(FLAGS_all) -g                     # Setup for running a debugger
 FLAGS_opt     = $(FLAGS_all) -O3 -DNDEBUG           # Fastest possible executable
@@ -10,9 +10,9 @@ FLAGS_grumpy  = $(FLAGS_all) -Wconversion -Weffc++  # Some extra picky warnings
 CXX = g++
 
 # List of all available executables
-EXECUTABLES = simple
+EXECUTABLES = simple raylib
 
-default: simple
+default: raylib
 
 # Generic rule to build default version of any executable
 $(EXECUTABLES): %:

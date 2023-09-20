@@ -8,6 +8,8 @@
 
 #include <cassert>
 
+#include "raylib/src/raylib.h"
+
 #include "../core/AgentBase.hpp"
 
 namespace cse491 {
@@ -16,6 +18,8 @@ namespace cse491 {
   protected:
     bool vertical=true; ///< Is this agent moving down&up?  False = right&left.
     bool reverse=false;  ///< Is this agent on their way back? (up/left?)
+    size_t countdown = 20;
+    size_t countdown_max = 20;
 
   public:
     PacingAgent(size_t id, const std::string & name) : AgentBase(id, name) { }
@@ -33,17 +37,23 @@ namespace cse491 {
                         const item_set_t & /* item_set*/,
                         const agent_set_t & /* agent_set*/) override
     {
-      // If the last step failed, try going in the other direction.
-      if (action_result == 0) {
-        reverse = !reverse;
+      if(countdown > 0){
+        countdown--;
       }
-      // Take as tep in the direction we are trying to go in.
-      if (vertical) {
-        if (reverse) return action_map["up"];
-        else         return action_map["down"];
-      } else {
-        if (reverse) return action_map["left"];
-        else         return action_map["right"];
+      else{
+        countdown = countdown_max;
+        // If the last step failed, try going in the other direction.
+        if (action_result == 0) {
+          reverse = !reverse;
+        }
+        // Take as tep in the direction we are trying to go in.
+        if (vertical) {
+          if (reverse) return action_map["up"];
+          else         return action_map["down"];
+        } else {
+          if (reverse) return action_map["left"];
+          else         return action_map["right"];
+        }
       }
       return 0;  // Should never actually get here...
     }
